@@ -59,6 +59,7 @@ print(f'After Pre-Processing: {check_after_na}')
 def create_table(data):
     try:
         cursor_est.execute(""" CREATE TABLE IF NOT EXISTS  amazon_sales (index INTEGER PRIMARY KEY, OrderID VARCHAR(50), Date VARCHAR(50), Status VARCHAR(50), Fulfilment VARCHAR(50), SalesChannel VARCHAR(50), ShipServiceLevel VARCHAR(50), Category VARCHAR(50), CourierStatus VARCHAR(50), Amount FLOAT, ShipState VARCHAR(50))""")
+        conn_est.commit()
         print(f'Created Table in Postgres Server')
     except Exception as err:
         print(f'Cannot create table due to: {err}')
@@ -73,10 +74,12 @@ def insert_data(data):
 
         if(result[0]) == 0:
             row_count += 1
-            cursor_est.execute(""" INSERT INTO amazon_sales(index, OrderID, Date, Status, Fulfilment, SalesChannel, ShipServiceLevel, Category, CourierStatus, Amount, ShipState) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%d,%s)""", (int(row[0]),str(row[1]), str(row[2]), str(row[3]), str(row[4]), str(row[5]), str(row[6]), str(row[7]), str(row[8]), float(row[9]), str(row[10])))
+            cursor_est.execute(""" INSERT INTO amazon_sales(index, OrderID, Date, Status, Fulfilment, SalesChannel, ShipServiceLevel, Category, CourierStatus, Amount, ShipState) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)""", (int(row[0]),str(row[1]), str(row[2]), str(row[3]), str(row[4]), str(row[5]), str(row[6]), str(row[7]), str(row[8]), float(row[9]) if str(row[9]).replace(".","").isdigit() else None, str(row[10])))
+    
+    conn_est.commit()
     print(f'Total Inserted Rows: {row_count}')
 
 view_data(data)
 # data_preprocessing(read_data)
-create_table(data)
+# create_table(data)
 insert_data(data)
