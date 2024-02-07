@@ -79,6 +79,7 @@ def insert_data(data):
     conn_est.commit()
     print(f'Total Inserted Rows: {row_count}')
 
+
 view_data(data)
 # data_preprocessing(read_data)
 # create_table(data)
