@@ -27,3 +27,4 @@ with DAG("CSV Stream to Airflow", default_args=data_args, schedule_interval="@da
     )
 
     write_csv_postgres >> write_sales_segmentation
+    
