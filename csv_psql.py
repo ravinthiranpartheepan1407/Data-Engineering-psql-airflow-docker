@@ -5,6 +5,7 @@ import pandas as pd
 import psycopg as psq
 # import vertezml as vz
 import numpy as np
+# import matplotlib.pyplot as plt
 
 load_dotenv()
 
@@ -79,8 +80,49 @@ def insert_data(data):
     conn_est.commit()
     print(f'Total Inserted Rows: {row_count}')
 
+def category_freq(data):
+    categoriesIndex = read_data["Category"].value_counts().index
+    categoriesVal = read_data["Category"].value_counts().values
+    # category = {
+    #     categoriesIndex: categoriesVal
+    # }
+    print(f'Category: {categoriesIndex} | Frequency: {categoriesVal}')
+    print(f'First Item: {categoriesIndex[0]}')
+    Items = []
+    SoldFrequency = []
+    for elements in range(len(categoriesIndex)):
+        Items.append(categoriesIndex[elements])
+
+    for elements in range(len(categoriesVal)):
+        SoldFrequency.append(categoriesVal[elements])
+    
+    print(f'Items: {Items}')
+    print(f'SoldFrequency: {SoldFrequency}')
+    # read_data["Items"] = read_data["Category"].value_counts()
+    # read_data["Sold_Frequency"] = read_data["Category"].value_counts().values
+    # try:
+    #     cursor_est.execute("""CREATE TABLE IF NOT EXISTS amazon_sales_segmentation(Items VARCHAR(50), SoldFrequency INTEGER)""")
+    #     conn_est.commit()
+    #     print("Amazon Sales Segmentation DB Created")
+    # except Exception as err:
+    #     print(f'DB not created due to {err}')
+    
+    insert_data = "INSERT INTO amazon_sales_segmentation(Items, SoldFrequency) VALUES (%s,%s)"
+    data_count = 0
+    for elements in range(len(Items)):
+        values = (Items[elements], SoldFrequency[elements])
+        cursor_est.execute(insert_data,values)
+        data_count += 1
+    conn_est.commit()
+    print(f'Data Inserted successfully')
+
+# def regression_analysis():
+#     categories = read_data["Category"].value_counts().index
+#     print(f'Item: {categories}')
+
 
 view_data(data)
 # data_preprocessing(read_data)
 # create_table(data)
-insert_data(data)
+# insert_data(data)
+category_freq(data)
